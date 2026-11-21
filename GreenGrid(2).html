@@ -1,0 +1,342 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>GreenGrid</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@600;700&family=Instrument+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#eef2ef;--card:#fff;--text:#16241d;--muted:#5d6e64;--line:#d5ddd8;--pine:#14452f;--pine-2:#1f6b49;--amber:#d99a00;--red:#b3261e;--dial:#0f1a14;--dial-t:#f3e9c6;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0f1713;--card:#17231c;--text:#e6efe9;--muted:#93a69b;--line:#2b3b32;--pine:#5fc592;--pine-2:#8be0b3;--amber:#f0b429;--red:#ff8a80;--dial:#070c09;--dial-t:#f3e9c6}}
+:root[data-theme="dark"]{--bg:#0f1713;--card:#17231c;--text:#e6efe9;--muted:#93a69b;--line:#2b3b32;--pine:#5fc592;--pine-2:#8be0b3;--amber:#f0b429;--red:#ff8a80;--dial:#070c09;--dial-t:#f3e9c6}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font:15px/1.5 "Instrument Sans",system-ui,sans-serif}
+h1,h2,h3{font-family:"Bricolage Grotesque",Georgia,serif;margin:0;letter-spacing:-.01em}
+.wrap{max-width:1040px;margin:0 auto;padding:20px 16px 48px}
+header{display:flex;justify-content:space-between;align-items:baseline;gap:12px;flex-wrap:wrap;margin-bottom:14px}
+header h1{font-size:28px;color:var(--pine)}
+header p{margin:0;color:var(--muted)}
+nav{display:flex;gap:6px;overflow-x:auto;border-bottom:1px solid var(--line);margin-bottom:18px}
+nav button{background:none;border:0;border-bottom:3px solid transparent;padding:10px 14px;font:600 15px "Instrument Sans",system-ui,sans-serif;color:var(--muted);cursor:pointer;white-space:nowrap}
+nav button.on{color:var(--pine);border-color:var(--pine)}
+button:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid var(--amber);outline-offset:1px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:16px;margin-bottom:16px}
+.card h2{font-size:18px;margin-bottom:10px}
+.grid{display:grid;gap:16px;grid-template-columns:repeat(auto-fit,minmax(280px,1fr))}
+.dial{background:var(--dial);border-radius:12px;padding:20px;color:var(--dial-t);margin-bottom:16px}
+.dial small{display:block;color:#b9b08f;margin-bottom:8px}
+.digits{display:flex;gap:5px;flex-wrap:wrap}
+.digits span{background:#1d2a22;border:1px solid #33463a;border-radius:4px;width:34px;height:52px;display:grid;place-items:center;font:700 30px "Bricolage Grotesque",Georgia,serif}
+.digits span.dot{width:14px;background:none;border:0;font-size:30px}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-bottom:16px}
+.stat{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:12px}
+.stat b{display:block;font:700 22px "Bricolage Grotesque",Georgia,serif}
+.stat span{color:var(--muted);font-size:13px}
+label{display:block;font-size:13px;color:var(--muted);margin:8px 0 3px}
+input,select{width:100%;padding:9px 10px;border:1px solid var(--line);border-radius:6px;background:var(--bg);color:var(--text);font:inherit}
+input[type=checkbox]{width:auto}
+.row{display:grid;gap:10px;grid-template-columns:repeat(auto-fit,minmax(140px,1fr))}
+.btn{background:var(--pine);color:#fff;border:0;border-radius:6px;padding:10px 16px;font:600 14px "Instrument Sans",system-ui,sans-serif;cursor:pointer;margin-top:12px}
+:root[data-theme="dark"] .btn{color:#0b1a12}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .btn{color:#0b1a12}}
+.btn.alt{background:none;color:var(--pine);border:1px solid var(--pine)}
+.btn.sm{padding:4px 10px;margin:0;font-size:13px}
+.scroll{overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-size:14px}
+th,td{text-align:left;padding:8px 10px;border-bottom:1px solid var(--line);white-space:nowrap}
+th{color:var(--muted);font-weight:600}
+td.n,th.n{text-align:right}
+.chip{padding:2px 8px;border-radius:99px;font-size:12px;font-weight:600;border:1px solid}
+.chip.paid{color:var(--pine);border-color:var(--pine)}
+.chip.unpaid{color:var(--red);border-color:var(--red)}
+.bar{display:flex;align-items:center;gap:10px;margin:6px 0;font-size:14px}
+.bar i{display:block;height:14px;background:var(--pine-2);border-radius:3px;min-width:2px}
+.bar span:first-child{width:96px;color:var(--muted)}
+.alert{border-left:4px solid var(--amber);padding:6px 10px;margin:6px 0;background:var(--bg);border-radius:0 6px 6px 0}
+.alert.hot{border-color:var(--red)}
+.invoice{border:1px dashed var(--line);border-radius:8px;padding:14px;max-width:420px}
+.invoice div{display:flex;justify-content:space-between;padding:2px 0}
+.invoice .tot{border-top:2px solid var(--text);margin-top:6px;padding-top:6px;font-weight:700}
+.empty{color:var(--muted);padding:8px 0}
+#toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(20px + env(safe-area-inset-bottom,0px));background:var(--text);color:var(--bg);padding:10px 16px;border-radius:8px;max-width:92%;display:none;z-index:5}
+#toast.err{background:var(--red);color:#fff}
+.upi{display:flex;gap:16px;align-items:center;flex-wrap:wrap;margin-top:12px}
+.qr{background:#fff;padding:10px;border-radius:8px;width:180px;height:180px}
+.qr svg{width:100%;height:100%;display:block}
+a.btn{display:inline-block;text-decoration:none}
+details{margin-top:14px}summary{cursor:pointer;color:var(--muted)}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header><h1>GreenGrid</h1><p>Smart energy monitoring and billing</p></header>
+  <nav id="tabs"></nav>
+  <main id="app"></main>
+</div>
+<div id="toast" role="status"></div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js"></script>
+<script>
+const TARIFF={
+  RESIDENTIAL:{l1:100,l2:300,r:[3.5,5,7.5],tax:5,sub:50},
+  COMMERCIAL:{l1:200,l2:500,r:[6,8,10],tax:8,sub:0},
+  INDUSTRIAL:{l1:500,l2:2000,r:[7,9,11],tax:12,sub:0}};
+const MON=["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+const LATE=2,OVERLOAD=1000,LOW=20;
+const SAMPLE=[["C101","Ravi Kumar","RESIDENTIAL","M1001",1200,1350,0],["C102","Anitha Stores","COMMERCIAL","M2001",5000,5420,50],["C103","Sri Steel Works","INDUSTRIAL","M3001",20000,22600,300],["C104","Lakshmi","RESIDENTIAL","M1002",800,815,0],["C105","Green Mart","COMMERCIAL","M2002",3000,3150,0]];
+
+let S={consumers:[],bills:[],payments:[],billN:1000,payN:5000};
+let tab="Dashboard",query="",sortOn=false,ysel="",lastBill=null,tt;
+try{const raw=localStorage.getItem("greengrid");if(raw)S=JSON.parse(raw)}catch(e){}
+S.upi=S.upi||{vpa:"",name:"GreenGrid Energy"};
+const save=()=>{try{localStorage.setItem("greengrid",JSON.stringify(S))}catch(e){}};
+
+const $=id=>document.getElementById(id);
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const money=n=>"Rs."+n.toLocaleString("en-IN",{minimumFractionDigits:2,maximumFractionDigits:2});
+const num=n=>n.toLocaleString("en-IN",{maximumFractionDigits:1});
+function toast(msg,err){const t=$("toast");t.textContent=msg;t.className=err?"err":"";t.style.display="block";clearTimeout(tt);tt=setTimeout(()=>t.style.display="none",3500)}
+function act(fn){try{const m=fn();if(m)toast(m);save();render()}catch(e){toast(e.message,true)}}
+
+/* ---- core logic (same rules as the Java version) ---- */
+const units=c=>c.cur-c.prev;
+const net=c=>Math.max(0,units(c)-c.solar);
+const findC=id=>S.consumers.find(c=>c.id.toLowerCase()===String(id).toLowerCase());
+function energy(cat,u){const t=TARIFF[cat];
+  if(u<=t.l1)return u*t.r[0];
+  else if(u<=t.l2)return t.l1*t.r[0]+(u-t.l1)*t.r[1];
+  else return t.l1*t.r[0]+(t.l2-t.l1)*t.r[1]+(u-t.l2)*t.r[2]}
+function sumRec(a,i=0){return i===a.length?0:a[i]+sumRec(a,i+1)}
+function checkReadings(p,c){
+  if(isNaN(p)||isNaN(c))throw new Error("Enter both meter readings as numbers.");
+  if(p<0||c<0)throw new Error("Reading cannot be negative.");
+  if(c<p)throw new Error("Current reading ("+c+") is lower than previous ("+p+").")}
+function addConsumer(c){
+  if(!c.id)throw new Error("Consumer ID is required.");
+  if(findC(c.id))throw new Error("Consumer ID already exists: "+c.id);
+  checkReadings(c.prev,c.cur);
+  if(isNaN(c.solar)||c.solar<0)throw new Error("Solar units must be 0 or more.");
+  S.consumers.push({...c,monthly:Array(12).fill(0)})}
+
+/* ---- actions ---- */
+function loadSample(){act(()=>{let n=0;SAMPLE.forEach(r=>{if(!findC(r[0])){addConsumer({id:r[0],name:r[1],cat:r[2],meter:r[3],prev:r[4],cur:r[5],solar:r[6]});n++}});return n+" sample consumers loaded."})}
+function register(){act(()=>{
+  if(!$("rname").value.trim())throw new Error("Name is required.");
+  addConsumer({id:$("rid").value.trim(),name:$("rname").value.trim(),cat:$("rcat").value,meter:$("rmeter").value.trim()||"-",prev:parseFloat($("rprev").value),cur:parseFloat($("rcur").value),solar:parseFloat($("rsolar").value||0)});
+  return "Consumer registered."})}
+function updateReading(){act(()=>{
+  const c=findC($("uid").value);if(!c)throw new Error("Choose a consumer.");
+  const n=parseFloat($("unew").value);checkReadings(c.cur,n);
+  c.prev=c.cur;c.cur=n;return "Reading updated. Units now "+units(c)+"."})}
+function genBill(){act(()=>{
+  const c=findC($("bc").value);if(!c)throw new Error("Choose a consumer.");
+  const m=parseInt($("bm").value),late=$("blate").checked,u=net(c),t=TARIFF[c.cat];
+  const en=energy(c.cat,u),tax=en*t.tax/100,sub=u<=t.l1?t.sub:0,pen=late?(en+tax-sub)*LATE/100:0;
+  const b={id:"B"+(++S.billN),cid:c.id,month:m,units:u,en,tax,sub,pen,total:Math.max(0,en+tax-sub+pen),paid:false};
+  S.bills.push(b);c.monthly[m-1]=u;lastBill=b.id;return "Bill "+b.id+" generated."})}
+let upiBill=null;
+const VPA=/^[a-zA-Z0-9._-]{2,}@[a-zA-Z][a-zA-Z0-9.-]{1,}$/;
+const upiLink=b=>"upi://pay?pa="+encodeURIComponent(S.upi.vpa)+"&pn="+encodeURIComponent(S.upi.name)+"&am="+b.total.toFixed(2)+"&cu=INR&tn="+encodeURIComponent("GreenGrid bill "+b.id)+"&tr="+b.id;
+function saveUpi(){act(()=>{const v=$("mvpa").value.trim(),n=$("mname").value.trim();
+  if(!VPA.test(v))throw new Error("Enter a valid UPI ID like name@bank.");
+  if(!n)throw new Error("Payee name is required.");
+  S.upi={vpa:v,name:n};return "UPI details saved."})}
+function openBill(){const b=S.bills.find(x=>x.id===upiBill&&!x.paid);if(!b)throw new Error("Choose an unpaid bill.");return b}
+function payUpi(){act(()=>{const b=openBill(),ref=$("utr").value.trim();
+  if(!/^\d{12}$/.test(ref))throw new Error("Enter the 12-digit UPI reference (UTR) shown in your payment app.");
+  if(S.payments.some(p=>p.ref===ref))throw new Error("This UPI reference was already used.");
+  b.paid=true;S.payments.push({id:"P"+(++S.payN),bill:b.id,amount:b.total,method:"UPI",ref,date:new Date().toISOString()});
+  upiBill=null;return "UPI payment recorded for "+b.id+"."})}
+function payCash(){act(()=>{const b=openBill(),amt=parseFloat($("pamt").value);
+  if(isNaN(amt)||amt<b.total)throw new Error("Insufficient amount. Due "+money(b.total)+".");
+  b.paid=true;S.payments.push({id:"P"+(++S.payN),bill:b.id,amount:b.total,method:"Cash",ref:"-",date:new Date().toISOString()});
+  upiBill=null;return "Cash payment recorded for "+b.id+"."})}
+function fillPay(id){upiBill=id;render();$("pid").scrollIntoView({block:"center"})}
+function copyVpa(){try{navigator.clipboard.writeText(S.upi.vpa).then(()=>toast("UPI ID copied."),()=>toast("Copy failed.",true))}catch(e){toast("Copy failed.",true)}}
+function drawQR(){const el=$("qr"),b=S.bills.find(x=>x.id===upiBill&&!x.paid);
+  if(!el||!b)return;
+  try{const q=qrcode(0,"M");q.addData(upiLink(b));q.make();el.innerHTML=q.createSvgTag({cellSize:5,margin:0,scalable:true})}
+  catch(e){el.textContent="QR unavailable. Use the button."}}
+function resetAll(){if(confirm("Delete all consumers, bills and payments?")){S={consumers:[],bills:[],payments:[],billN:1000,payN:5000,upi:S.upi};lastBill=null;save();render()}}
+
+/* ---- views ---- */
+const catOpts=()=>["RESIDENTIAL","COMMERCIAL","INDUSTRIAL"].map(c=>`<option>${c}</option>`).join("");
+const consOpts=sel=>S.consumers.map(c=>`<option value="${esc(c.id)}"${c.id===sel?" selected":""}>${esc(c.id)} - ${esc(c.name)}</option>`).join("");
+const emptyMsg=`<p class="empty">No consumers yet. <button class="btn sm" onclick="loadSample()">Load sample consumers</button></p>`;
+
+function dashboard(){
+  const C=S.consumers,total=C.reduce((a,c)=>a+units(c),0);
+  const rev=S.payments.reduce((a,p)=>a+p.amount,0);
+  const unpaid=S.bills.filter(b=>!b.paid),out=unpaid.reduce((a,b)=>a+b.total,0);
+  const solar=C.reduce((a,c)=>a+c.solar,0);
+  const digits=String(Math.round(total)).padStart(6,"0").split("").map(d=>`<span>${d}</span>`).join("");
+  const byCat={};C.forEach(c=>byCat[c.cat]=(byCat[c.cat]||0)+units(c));
+  const billed={};S.bills.forEach(b=>{const c=findC(b.cid);if(c)billed[c.cat]=(billed[c.cat]||0)+b.total});
+  const mx=Math.max(1,...Object.values(byCat));
+  const bars=Object.keys(byCat).map(k=>`<div class="bar"><span>${k.toLowerCase()}</span><i style="width:${byCat[k]/mx*60}%"></i><span>${num(byCat[k])}</span></div>`).join("")||'<p class="empty">No data yet.</p>';
+  const top=[...C].sort((a,b)=>units(b)-units(a)).slice(0,3).map(c=>`<tr><td>${esc(c.name)}</td><td class="n">${num(units(c))}</td></tr>`).join("");
+  const alerts=C.map(c=>{const u=units(c);return u>OVERLOAD?`<div class="alert hot">Overload: ${esc(c.name)} used ${num(u)} units.</div>`:u<LOW?`<div class="alert">Low consumption: ${esc(c.name)} used only ${num(u)} units.</div>`:""}).join("")||'<p class="empty">No alerts.</p>';
+  return `<div class="dial"><small>Total units consumed across all consumers</small><div class="digits">${digits}</div></div>
+  ${C.length?"":emptyMsg}
+  <div class="stats">
+    <div class="stat"><b>${C.length}</b><span>Consumers</span></div>
+    <div class="stat"><b>${S.bills.length}</b><span>Bills generated</span></div>
+    <div class="stat"><b>${unpaid.length}</b><span>Unpaid bills</span></div>
+    <div class="stat"><b>${money(rev)}</b><span>Revenue collected</span></div>
+    <div class="stat"><b>${money(out)}</b><span>Outstanding</span></div>
+    <div class="stat"><b>${num(solar)}</b><span>Solar units generated</span></div>
+  </div>
+  <div class="grid">
+    <div class="card"><h2>Units by category</h2>${bars}
+      <h2 style="margin-top:14px">Billed by category</h2>${Object.keys(billed).map(k=>`<div class="bar"><span>${k.toLowerCase()}</span><span>${money(billed[k])}</span></div>`).join("")||'<p class="empty">No bills yet.</p>'}</div>
+    <div class="card"><h2>Top 3 consumers</h2><table><tbody>${top||'<tr><td class="empty">No data yet.</td></tr>'}</tbody></table>
+      <h2 style="margin-top:14px">Alerts</h2>${alerts}</div>
+  </div>
+  <button class="btn alt" onclick="resetAll()">Reset all data</button>`;
+}
+
+function consTable(){
+  let list=S.consumers.filter(c=>(c.name+" "+c.id).toLowerCase().includes(query.toLowerCase()));
+  if(sortOn)list=[...list].sort((a,b)=>units(b)-units(a));
+  if(!list.length)return '<p class="empty">No consumers match.</p>';
+  return `<div class="scroll"><table><thead><tr><th>ID</th><th>Name</th><th>Category</th><th>Meter</th><th class="n">Units</th><th class="n">Solar</th><th class="n">Net units</th></tr></thead><tbody>`+
+  list.map(c=>`<tr><td>${esc(c.id)}</td><td>${esc(c.name)}</td><td>${c.cat.toLowerCase()}</td><td>${esc(c.meter)}</td><td class="n">${num(units(c))}</td><td class="n">${num(c.solar)}</td><td class="n">${num(net(c))}</td></tr>`).join("")+"</tbody></table></div>";
+}
+function setQuery(v){query=v;$("ctable").innerHTML=consTable()}
+function setSort(v){sortOn=v;$("ctable").innerHTML=consTable()}
+
+function consumers(){
+  return `<div class="card"><h2>Consumers</h2>
+    <div class="row"><div><label for="q">Search by name or ID</label><input id="q" value="${esc(query)}" oninput="setQuery(this.value)"></div>
+    <div><label>&nbsp;</label><label style="margin:8px 0"><input type="checkbox" ${sortOn?"checked":""} onchange="setSort(this.checked)"> Sort by consumption, highest first</label></div></div>
+    <div id="ctable">${S.consumers.length?consTable():emptyMsg}</div></div>
+  <div class="grid">
+    <div class="card"><h2>Register consumer and meter</h2>
+      <div class="row"><div><label for="rid">Consumer ID</label><input id="rid" placeholder="C106"></div><div><label for="rname">Name</label><input id="rname"></div></div>
+      <div class="row"><div><label for="rcat">Category</label><select id="rcat">${catOpts()}</select></div><div><label for="rmeter">Meter number</label><input id="rmeter" placeholder="M1003"></div></div>
+      <div class="row"><div><label for="rprev">Previous reading</label><input id="rprev" type="number" min="0" step="any"></div><div><label for="rcur">Current reading</label><input id="rcur" type="number" min="0" step="any"></div><div><label for="rsolar">Solar units</label><input id="rsolar" type="number" min="0" step="any" value="0"></div></div>
+      <button class="btn" onclick="register()">Register consumer</button></div>
+    <div class="card"><h2>Update meter reading</h2>
+      <label for="uid">Consumer</label><select id="uid">${consOpts()}</select>
+      <label for="unew">New reading (not lower than current)</label><input id="unew" type="number" min="0" step="any">
+      <button class="btn" onclick="updateReading()">Update reading</button></div>
+  </div>`;
+}
+
+function invoice(b){
+  const c=findC(b.cid);if(!c)return "";
+  return `<div class="invoice"><h3 style="margin-bottom:8px">Invoice ${b.id}</h3>
+  <div><span>Consumer</span><span>${esc(c.name)} (${esc(c.id)})</span></div>
+  <div><span>Category</span><span>${c.cat.toLowerCase()}</span></div>
+  <div><span>Meter</span><span>${esc(c.meter)}</span></div>
+  <div><span>Month</span><span>${MON[b.month-1]}</span></div>
+  <div><span>Net units</span><span>${num(b.units)}</span></div>
+  <div><span>Energy</span><span>${money(b.en)}</span></div>
+  <div><span>Tax</span><span>${money(b.tax)}</span></div>
+  <div><span>Subsidy</span><span>-${money(b.sub)}</span></div>
+  <div><span>Late fee</span><span>${money(b.pen)}</span></div>
+  <div class="tot"><span>Total</span><span>${money(b.total)}</span></div></div>`;
+}
+
+function payCard(){
+  const open=S.bills.filter(b=>!b.paid),b=open.find(x=>x.id===upiBill);
+  let body="";
+  if(!open.length)body='<p class="empty">No unpaid bills.</p>';
+  else{
+    body=`<label for="pid">Unpaid bill</label><select id="pid" onchange="upiBill=this.value||null;render()"><option value="">Select a bill</option>${open.map(x=>`<option value="${x.id}"${b&&x.id===b.id?" selected":""}>${x.id} - ${esc(x.cid)} - ${money(x.total)}</option>`).join("")}</select>`;
+    if(b){
+      body+=S.upi.vpa?`<div class="upi"><div id="qr" class="qr" role="img" aria-label="UPI payment QR code"></div>
+        <div><b style="font-size:22px">${money(b.total)}</b><p class="empty">Scan with any UPI app, or on a phone tap:</p>
+        <a class="btn" href="${esc(upiLink(b))}">Open UPI app</a> <button class="btn alt" onclick="copyVpa()">Copy ${esc(S.upi.vpa)}</button></div></div>
+        <label for="utr">UPI reference number (UTR, 12 digits)</label><input id="utr" inputmode="numeric" maxlength="12" placeholder="123456789012">
+        <button class="btn" onclick="payUpi()">Confirm UPI payment</button>`
+        :'<div class="alert">Set the merchant UPI ID in "UPI merchant settings" to accept UPI payments.</div>';
+      body+=`<details><summary>Cash payment instead</summary><label for="pamt">Amount received</label><input id="pamt" type="number" min="0" step="any" value="${b.total.toFixed(2)}"><button class="btn alt" onclick="payCash()">Record cash payment</button></details>`;
+    }
+  }
+  return `<div class="card"><h2>Pay bill</h2>${body}</div>`;
+}
+function upiSettings(){
+  return `<div class="card"><h2>UPI merchant settings</h2>
+  <label for="mvpa">Receiving UPI ID</label><input id="mvpa" value="${esc(S.upi.vpa)}" placeholder="yourname@bank" autocapitalize="off">
+  <label for="mname">Payee name</label><input id="mname" value="${esc(S.upi.name)}">
+  <button class="btn" onclick="saveUpi()">Save UPI details</button></div>`;
+}
+function payHist(){
+  const r=[...S.payments].reverse().map(p=>`<tr><td>${p.id}</td><td>${p.bill}</td><td>${p.method||"Cash"}</td><td>${esc(p.ref||"-")}</td><td>${p.date?new Date(p.date).toLocaleString("en-IN",{dateStyle:"medium",timeStyle:"short"}):"-"}</td><td class="n">${money(p.amount)}</td></tr>`).join("");
+  return `<div class="card"><h2>Payment history</h2>${r?`<div class="scroll"><table><thead><tr><th>Payment</th><th>Bill</th><th>Method</th><th>Reference</th><th>Date</th><th class="n">Amount</th></tr></thead><tbody>${r}</tbody></table></div>`:'<p class="empty">No payments yet.</p>'}</div>`;
+}
+
+function billing(){
+  const rows=[...S.bills].reverse().map(b=>`<tr><td>${b.id}</td><td>${esc(b.cid)}</td><td>${MON[b.month-1]}</td><td class="n">${num(b.units)}</td><td class="n">${money(b.total)}</td><td><span class="chip ${b.paid?"paid":"unpaid"}">${b.paid?"Paid":"Unpaid"}</span></td><td>${b.paid?"":`<button class="btn sm" onclick="fillPay('${b.id}')">Pay</button>`}</td></tr>`).join("");
+  const lb=S.bills.find(b=>b.id===lastBill);
+  return `<div class="grid">
+    <div class="card"><h2>Generate bill</h2>
+      <label for="bc">Consumer</label><select id="bc">${consOpts()}</select>
+      <div class="row"><div><label for="bm">Month</label><select id="bm">${MON.map((m,i)=>`<option value="${i+1}">${m}</option>`).join("")}</select></div>
+      <div><label>&nbsp;</label><label style="margin:8px 0"><input type="checkbox" id="blate"> Paid late (adds ${LATE}% fee)</label></div></div>
+      <button class="btn" onclick="genBill()">Generate bill</button>
+      ${lb?`<div style="margin-top:14px">${invoice(lb)}</div>`:""}</div>
+    ${payCard()}
+    ${upiSettings()}
+  </div>
+  <div class="card"><h2>All bills</h2>${rows?`<div class="scroll"><table><thead><tr><th>Bill</th><th>Consumer</th><th>Month</th><th class="n">Units</th><th class="n">Total</th><th>Status</th><th></th></tr></thead><tbody>${rows}</tbody></table></div>`:'<p class="empty">No bills yet. Generate one above.</p>'}</div>${payHist()}`;
+}
+
+function yearly(){
+  if(!S.consumers.length)return `<div class="card"><h2>Yearly report</h2>${emptyMsg}</div>`;
+  const c=findC(ysel)||S.consumers[0];ysel=c.id;const d=c.monthly;
+  const hi=d.indexOf(Math.max(...d)),pos=d.filter(x=>x>0),lo=pos.length?d.indexOf(Math.min(...pos)):-1,tot=sumRec(d);
+  return `<div class="card"><h2>Yearly consumption</h2>
+    <label for="ys">Consumer</label><select id="ys" onchange="ysel=this.value;render()">${consOpts(c.id)}</select>
+    <div class="scroll" style="margin-top:10px"><table><thead><tr><th>Month</th><th class="n">Net units</th></tr></thead><tbody>${d.map((x,i)=>`<tr><td>${MON[i]}</td><td class="n">${num(x)}</td></tr>`).join("")}</tbody></table></div>
+    <div class="stats" style="margin:14px 0 0">
+      <div class="stat"><b>${num(tot)}</b><span>Total</span></div>
+      <div class="stat"><b>${num(tot/12)}</b><span>Monthly average</span></div>
+      <div class="stat"><b>${tot?MON[hi]:"-"}</b><span>Highest month</span></div>
+      <div class="stat"><b>${lo>=0?MON[lo]:"-"}</b><span>Lowest month</span></div></div>
+    <p class="empty">Months fill in when you generate bills for this consumer.</p></div>`;
+}
+
+const EF=()=>S.co2||0.71;
+function setEF(){act(()=>{const v=parseFloat($("ef").value);if(isNaN(v)||v<=0||v>2)throw new Error("Enter a factor between 0 and 2 kg CO2 per unit.");S.co2=v;return "Emission factor updated."})}
+function solarView(){
+  const C=S.consumers;
+  if(!C.length)return `<div class="card"><h2>Solar impact</h2>${emptyMsg}</div>`;
+  const ef=EF(),solar=C.reduce((a,c)=>a+c.solar,0),used=C.reduce((a,c)=>a+units(c),0),gridNet=C.reduce((a,c)=>a+net(c),0);
+  const saved=solar*ef,emitted=gridNet*ef,trees=saved/21,km=saved/0.12,share=used?Math.min(100,solar/used*100):0;
+  const digits=String(Math.round(saved)).padStart(6,"0").split("").map(d=>`<span>${d}</span>`).join("");
+  const mx=Math.max(1,...C.map(c=>c.solar));
+  const list=[...C].sort((a,b)=>b.solar-a.solar);
+  const bars=list.map(c=>`<div class="bar"><span>${esc(c.name)}</span><i style="width:${c.solar/mx*45}%"></i><span>${num(c.solar)}</span></div>`).join("");
+  const rows=list.map(c=>{const u=units(c);return `<tr><td>${esc(c.name)}</td><td>${c.cat.toLowerCase()}</td><td class="n">${num(c.solar)}</td><td class="n">${u?num(Math.min(100,c.solar/u*100)):"0"}%</td><td class="n">${num(c.solar*ef)}</td></tr>`}).join("");
+  return `<div class="dial"><small>Carbon footprint saved by solar (kg of CO2)</small><div class="digits">${digits}</div></div>
+  <div class="stats">
+    <div class="stat"><b>${num(solar)}</b><span>Solar units generated</span></div>
+    <div class="stat"><b>${saved>=1000?num(saved/1000)+" t":num(saved)+" kg"}</b><span>CO2 avoided</span></div>
+    <div class="stat"><b>${num(trees)}</b><span>Trees needed for one year</span></div>
+    <div class="stat"><b>${num(km)}</b><span>Car km avoided</span></div>
+    <div class="stat"><b>${num(share)}%</b><span>Usage covered by solar</span></div>
+    <div class="stat"><b>${emitted>=1000?num(emitted/1000)+" t":num(emitted)+" kg"}</b><span>CO2 from grid power still used</span></div>
+  </div>
+  <div class="grid">
+    <div class="card"><h2>Solar units by consumer</h2>${bars}</div>
+    <div class="card"><h2>Emission factor</h2>
+      <label for="ef">kg of CO2 per grid unit</label><input id="ef" type="number" min="0" step="0.01" value="${ef}">
+      <button class="btn" onclick="setEF()">Update factor</button>
+      <p class="empty">Estimates only. The default of 0.71 is an approximate Indian grid average; set your own figure if you have an official one. Equivalents assume a tree absorbs about 21 kg of CO2 a year and a petrol car emits about 0.12 kg per km.</p></div>
+  </div>
+  <div class="card"><h2>Impact per consumer</h2><div class="scroll"><table><thead><tr><th>Consumer</th><th>Category</th><th class="n">Solar units</th><th class="n">Share of usage</th><th class="n">CO2 saved (kg)</th></tr></thead><tbody>${rows}</tbody></table></div></div>`;
+}
+
+const VIEWS={"Dashboard":dashboard,"Consumers":consumers,"Billing":billing,"Solar impact":solarView,"Yearly report":yearly};
+function render(){
+  $("tabs").innerHTML=Object.keys(VIEWS).map(t=>`<button class="${t===tab?"on":""}" onclick="tab='${t}';render()">${t}</button>`).join("");
+  $("app").innerHTML=VIEWS[tab]();drawQR();
+}
+render();
+</script>
+</body>
+</html>
